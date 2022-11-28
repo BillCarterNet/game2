@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+      <title>A Game by Bill Carter</title>
+      <meta charset="UTF-8">
+      <meta name="description" content="A Game by Bill Carter">
+      <meta name="title" content="A Game by Bill Carter">
+      <meta name="author" content="Bill Carter">
+      <link rel="stylesheet" id="gameCss" href="/css/game.css"/>
+      <script type="importmap">
+          {
+              "imports":{
+                  "three": "./build/three.module.js",
+                  "dat": "./dat/dat.gui.module.js",
+                  "three/examples/jsm/loaders/GLTFLoader": "./jsm/loaders/GLTFLoader.js"
+              }
+          }
+      </script>
+
+    <!--
+        path of module /Users/billcarter/Repositories/TBE/node_modules/dat.gui/build/dat.gui.module.js 
+    
+                      "three/examples/jsm/libs/dat.gui.module": "./jsm/libs/dat.gui.module.js",
+                  "dat": "./dat.gui/build/dat.gui.module.js"
+    -->
+
+    </head>
+
+    <body>
+
+        <!-- Load game code -->
+        <script type="module" src="./js/code.js"></script>
+        <!-- Needs to be type = module to use imports -->
+        <!-- Also needs to run as server to avoid CORS issues -->
+
+    </body>
+
+</html>

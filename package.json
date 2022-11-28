@@ -1,0 +1,19 @@
+{
+  "name": "tbe",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node localServer.js",
+    "start": "node server.js",
+    "local": "node localServer.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/dat.gui": "^0.7.7",
+    "dat.gui": "^0.7.9",
+    "express": "^4.17.1",
+    "three": "^0.138.3"
+  }
+}
