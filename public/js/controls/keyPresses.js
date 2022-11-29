@@ -73,12 +73,20 @@ let keyPresses = {
 
             }
 
-            // Is it 'g' advance character turn
+            // Is it 'g' end current character turn
             if ( e.which == 103 ) {
 
                 GameState[ GameState.currentSide ][ GameState.currentCharacter ].TurnPending = false;
                 console.log( `Flagging [${GameState.currentCharacter}] as TurnPending = false` );
                 console.log( CharacterMethods.getTurnOrder() );
+
+            }
+
+            // Is it 'h' log gamestate to console
+            if ( e.which == 104 ) {
+
+                console.log( `DEBUG log GameState` );
+                console.log( GameState );
 
             }
 
