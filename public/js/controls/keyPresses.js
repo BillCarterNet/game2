@@ -1,5 +1,6 @@
 import GameCamera from '../game/camera.js';
 import GameState from '../game/state.js';
+import CharacterMethods from '../characters/methods.js';
 
 let keyPresses = {
 
@@ -55,7 +56,7 @@ let keyPresses = {
 
             // DEBUG
 
-            // is it 'f'
+            // is it 'f' - Toggle DEBUG display
             if ( e.which === 102 ) {
 
                 if ( GameState.debug ) {
@@ -72,11 +73,12 @@ let keyPresses = {
 
             }
 
-            // g 103
+            // Is it 'g' advance character turn
             if ( e.which == 103 ) {
 
-                GameState.players[ GameState.currentPlayer ].TurnPending = false;
-                console.log( `Flagging [${GameState.currentPlayer}] as TurnPending = false` );
+                GameState[ GameState.currentSide ][ GameState.currentCharacter ].TurnPending = false;
+                console.log( `Flagging [${GameState.currentCharacter}] as TurnPending = false` );
+                console.log( CharacterMethods.getTurnOrder() );
 
             }
 

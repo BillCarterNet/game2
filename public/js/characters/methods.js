@@ -1,7 +1,7 @@
-// Internal methods for characters
-
 import GameState from "../game/state.js";
 import GameConfig from "../game/config.js";
+
+// Internal methods for characters
 
 const methods = {
 
@@ -12,7 +12,7 @@ const methods = {
         GameState.enemies[ enemy ] = {};
 
         GameState.enemies[ enemy ].Model = enemy;
-        GameState.enemies[ enemy ].Side = 'enemy';
+        GameState.enemies[ enemy ].Side = 'enemies';
         GameState.enemies[ enemy ].Row = row;
         GameState.enemies[ enemy ].Hex = hex;
         GameState.enemies[ enemy ].TurnPending = true;
@@ -28,7 +28,7 @@ const methods = {
         GameState.players[ player ] = {};
 
         GameState.players[ player ].Model = player;
-        GameState.players[ player ].Side = 'player';
+        GameState.players[ player ].Side = 'players';
         GameState.players[ player ].Row = row;
         GameState.players[ player ].Hex = hex;
         GameState.players[ player ].TurnPending = true;
@@ -277,6 +277,31 @@ const methods = {
 
     },
 
+    getStatsitcs: ( characterSide, characterName, statisticsType ) => {
+
+        if ( !GameState[ characterSide ]) { console.log( `ERROR: No characterSide in GameState for [${characterSide}]` ); }
+    
+        if ( !GameState[ characterSide ][ characterName ]) { console.log( `ERROR: No characterName in GameState for [${characterName}]` ); }
+    
+        switch ( statisticsType ) {
+    
+            case 'BaseStats':
+            case 'ItemStats':
+            case 'BuffStats':
+            case 'DebuffStats':
+            case 'EnvironmentStats':
+            case 'CurrentStats':
+            break;
+            default:
+                console.log(`ERROR: [${statisticsType}] is not a valid statstics type`);
+            break;
+    
+        }
+    
+        return GameState[ characterSide ][ characterName ][ statisticsType ];
+    
+    },
+
     getTurnOrder: () => {
 
         const playersAndEnemies = [];
@@ -290,13 +315,73 @@ const methods = {
             playersAndEnemies.push( GameState.enemies[ enemy ] );
 
         });
-        // console.log(`playersAndEnemies`);
-        // console.log(playersAndEnemies);
+
+        // What happens here when players and enemies have the same int
         return playersAndEnemies.sort( ( a, b ) => {
 
             return b.BaseStats.Initiative - a.BaseStats.Initiative;
 
         });
+
+    },
+
+    getHighestInitiativeCharacterPendingTurn: () => {
+
+        let nextCharacter = 'none';
+        let nextSide = 'none';
+        let characterInitiative = - 1;
+
+        const allCharacters = [];
+        Object.keys(GameState.players).forEach( player => { allCharacters.push( GameState.players[ player ] ) });
+        Object.keys(GameState.enemies).forEach( enemy => { allCharacters.push( GameState.enemies[ enemy ] ) });
+
+        allCharacters.forEach( character => {
+
+            if ( character.TurnPending ) {
+
+                if ( character.CurrentStats.Initiative > characterInitiative ) {
+
+                    nextCharacter = character.Model;
+                    nextSide = character.Side;
+                    characterInitiative = character.CurrentStats.Initiative;
+
+                }
+
+            }
+
+        });
+
+        if ( nextCharacter === 'none' || nextSide === 'none' || characterInitiative === -1) {
+
+            throw new Error( 'ERROR: [methods.getHighestInitiativeCharacterPendingTurn()]: We have not found a character' );
+
+        }
+
+        return {
+
+            character: nextCharacter,
+            side: nextSide,
+            initiative: characterInitiative,
+
+        };
+
+    },
+
+    haveAllCharactersBeen: () => {
+
+        let result = true;
+
+        Object.keys( GameState.players ).forEach( player => { if ( GameState.players[ player ].TurnPending ) { result = false; } });
+        Object.keys( GameState.enemies ).forEach( enemy => { if ( GameState.enemies[ enemy ].TurnPending ) { result = false; } });
+
+        return result;
+
+    },
+
+    setAllCharactersToPending: () => {
+
+        Object.keys( GameState.players ).forEach( player => { GameState.players[ player ].TurnPending = true; });
+        Object.keys( GameState.enemies ).forEach( enemy => { GameState.enemies[ enemy ].TurnPending = true; });
 
     },
 

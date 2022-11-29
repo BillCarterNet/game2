@@ -115,7 +115,7 @@ const turnOrder = {
                     case 3:
                         if ( characters[row].TurnPending ) { td.innerText = 'Pending'; } 
                         else { td.innerText = 'Been'; }
-                        if ( GameState.currentPlayer === characters[row].Model ) { 
+                        if ( GameState.currentCharacter === characters[row].Model ) { 
                             
                             td.innerText = 'Active';
                             td.style.background = activeBackground; 

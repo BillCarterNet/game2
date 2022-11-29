@@ -368,13 +368,20 @@ const playerAndTarget = {
         if ( GameState.playerSelected ) {
 
             playerContainer.hidden = false;
+            if ( !GameState.currentSide || !GameState.currentCharacter ) { throw new Error( 'Blank!' ); }
+            if ( !GameState[ GameState.currentSide ][ GameState.currentCharacter ] ) { 
+                console.log( `[ ${GameState.currentSide} ][ ${GameState.currentCharacter} ]` ); 
+                console.log( GameState );
+                throw new Error( 'Error' ); 
+            }
             playerName.innerText = 
-                `${ GameState.players[ GameState.currentPlayer ].Name } ` + 
-                `[${ GameState.players[ GameState.currentPlayer ].Class }] `;
+                `${ GameState[ GameState.currentSide ][ GameState.currentCharacter ].Name } ` + 
+                `[${ GameState[ GameState.currentSide ][ GameState.currentCharacter ].Class }] `;
             const playerNameContainer = document.getElementById( 'playerNameContainer' );
-            playerNameContainer.style.background = playerBackground;
+            if ( GameState.currentSide === 'players' ) { playerNameContainer.style.background = playerBackground; }
+            if ( GameState.currentSide === 'enemies' ) { playerNameContainer.style.background = enemyBackground; }
             //insertValue( 1, GameState.players[ GameState.currentPlayer ].BaseStats.ActionPoints, 'actionPointValue' );
-            insertValue( 1, GameState.players[ GameState.currentPlayer ].BaseStats.ActionPoints, `actionPointValue_player` );
+            insertValue( 1, GameState[ GameState.currentSide ][ GameState.currentCharacter ].BaseStats.ActionPoints, `actionPointValue_player` );
 
         } else {
 

@@ -5,7 +5,16 @@ import Css from './css.js';
 import Html from './html.js';
 import GameConfig from '../../game/config.js';
 import GameState from '../../game/state.js';
-import Players from '../../characters/players.js';
+import Helper from '../../assets/helper.js';
+
+const playerBackground = Helper.hexToRGBA( 
+    GameConfig.colours.player, 
+    GameConfig.opacity, 
+);
+const enemyBackground = Helper.hexToRGBA( 
+    GameConfig.colours.enemy, 
+    GameConfig.opacity, 
+);
 
 const playerStatsHeadings = [ 'STATS' ]
 Object.keys( GameConfig.stats ).forEach( stat => {
@@ -26,10 +35,13 @@ const html = () => {
     playerStatsContainer.hidden = true;
 
     // Heading
+    const playerStatHeadingContainer = document.createElement( 'div' );
+    playerStatHeadingContainer.setAttribute( 'id', 'playerStatHeadingContainer' );
     const playerStatsHeading = document.createElement( 'h1' );
     playerStatsHeading.setAttribute( 'id', 'playerStatsHeading' );
     playerStatsHeading.innerText = 'Stats';
-    playerStatsContainer.appendChild( playerStatsHeading );
+    playerStatHeadingContainer.appendChild( playerStatsHeading );
+    playerStatsContainer.appendChild( playerStatHeadingContainer );
 
     // Table
     const playerStatsTable = Html.createTable( null, 'playerStatsTable', 6, playerStatsHeadings.length, playerStatsHeadings );
@@ -55,63 +67,54 @@ const css = () => {
     Css.addRule( '#playerStatsTable, th, td', 'border-collapse: collapse' );
     Css.addRule( '#playerStatsTable, th, td', 'padding: 2px 4px 2px 4px' );
 
+    Css.addRule( '#playerStatHeadingContainer', 'display: -webkit-flex;' );
+    Css.addRule( '#playerStatHeadingContainer', 'display: flex;' );
+    Css.addRule( '#playerStatHeadingContainer', 'align-items: center;' );
+    Css.addRule( '#playerStatHeadingContainer', 'justify-content: center;' );
+    Css.addRule( '#playerStatHeadingContainer h1', 'font-size: 18px;' );
+
 }
 
 // Dont call until player models are loaded and players initialised
 const updatePlayerStatsTable = () => {
     
     const playerStatsData = {
-        baseValues: [ 'Base' ],
-        itemModifiers: [ 'Items' ],
-        buffModifiers: [ 'Buffs' ],
-        debuffModifiers: [ 'Debuffs' ],
-        environmentModifiers: [ 'Environment' ],
-        current: [ 'Current' ],
+
+        BaseStats: [ 'Base' ],
+        ItemStats: [ 'Items' ],
+        BuffStats: [ 'Buffs' ],
+        DebuffStats: [ 'Debuffs' ],
+        EnvironmentStats: [ 'Environment' ],
+        CurrentStats: [ 'Current' ],
+
     };
 
     // Heading 
     const playerStatsHeading = document.getElementById( 'playerStatsHeading' );
-    playerStatsHeading.innerText = `${GameState.players[ GameState.currentPlayer ].Name} Stats`;
+    playerStatsHeading.innerText = `${ GameState[ GameState.currentSide ][ GameState.currentCharacter ].Name } Stats`;
+    const playerStatHeadingContainer = document.getElementById( 'playerStatHeadingContainer' );
+    if ( GameState.currentSide === 'players' ) { playerStatHeadingContainer.style[ 'background-color' ] = playerBackground; }
+    if ( GameState.currentSide === 'enemies' ) { playerStatHeadingContainer.style[ 'background-color' ] = enemyBackground; }
 
-    // Base Values
-    Object.keys( Players.getBaseStats( GameState.currentPlayer ) ).forEach( stat => {
+    // Stats
+    Object.keys( playerStatsData ).forEach( statType => {
 
-        playerStatsData.baseValues.push( GameState.players[ GameState.currentPlayer ].BaseStats[ stat ] );
+        Object.keys( GameConfig.stats ).forEach( stat => {
 
-    });
+            if ( GameState[ GameState.currentSide ][ GameState.currentCharacter ][ statType ][ stat ] !== undefined ) {
 
-    // Items
-    Object.keys( Players.getItemStats( GameState.currentPlayer ) ).forEach( stat => {
+                playerStatsData[ statType ].push( GameState[ GameState.currentSide ][ GameState.currentCharacter ][ statType ][ stat ] );
 
-        playerStatsData.itemModifiers.push( GameState.players[ GameState.currentPlayer ].ItemStats[ stat ] );
+            } else {
 
-    });
+                console.log( `ERROR: No stat value for GameState[${ GameState.currentSide }][${ GameState.currentCharacter }][${ statType }][${stat}]`);
+                console.log( GameState[ GameState.currentSide ][ GameState.currentCharacter ][ statType ][ stat ] );
+                console.log( GameState )
+                throw new Error( 'Fatal Error' );
 
-    // Buff Modifiers
-    Object.keys( Players.getBuffStats( GameState.currentPlayer ) ).forEach( stat => {
+            }
 
-        playerStatsData.buffModifiers.push( GameState.players[ GameState.currentPlayer ].BuffStats[ stat ] );
-
-    });
-
-    // Debuff Modifiers
-    Object.keys( Players.getDebuffStats( GameState.currentPlayer ) ).forEach( stat => {
-
-        playerStatsData.debuffModifiers.push( GameState.players[ GameState.currentPlayer ].DebuffStats[ stat ] );
-
-    });
-
-    // Environment Modifiers
-    Object.keys( Players.getEnvironmentStats( GameState.currentPlayer ) ).forEach( stat => {
-
-        playerStatsData.environmentModifiers.push( GameState.players[ GameState.currentPlayer ].EnvironmentStats[ stat ] );
-
-    });
-
-    // Environment Modifiers
-    Object.keys( Players.getCurrentStats( GameState.currentPlayer ) ).forEach( stat => {
-
-        playerStatsData.current.push( GameState.players[ GameState.currentPlayer ].CurrentStats[ stat ] );
+        });
 
     });
 
@@ -124,11 +127,11 @@ const updatePlayerStatsTable = () => {
             const td = document.getElementById( `playerStatsTable_row_${rowIndex}_col_${i}` );
             if (
                 ( playerStatsData[ row ][ i ] === 0) && 
-                ( row !== 'baseValues' )
+                ( row !== 'BaseStats' )
             ) {
 
                 // Dont display zero's unless its the 'current' row
-                if ( row !== 'current' ) {
+                if ( row !== 'CurrentStats' ) {
 
                     td.innerText = '';
                     

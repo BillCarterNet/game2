@@ -20,6 +20,7 @@ import PointLights from './game/pointLights.js';
 import Grid from './grid/grid.js';
 import Players from './characters/players.js';
 import Enemies from './characters/enemies.js';
+import CharacterMethods from './characters/methods.js';
 //import Fire from './fire/fire.js';
 import TextureLoader from './assets/textureLoader.js';
 import ModelLoader from './assets/modelLoader.js';
@@ -113,6 +114,7 @@ const renderFrame = () => {
     GameCamera.render( renderer, scene );
     //Lights.updateLights();
     PointLights.updateLights();
+    // THREE DEBUG
     stats.update();
 
     if ( GameState.debug ) { 
@@ -170,30 +172,39 @@ const renderFrame = () => {
         Players.addToScene( scene );
         Enemies.addToScene( scene );
         GameState.state.modelsAdded = true;
+        GameState.currentCharacter = CharacterMethods.getTurnOrder()[0].Model; // First element highest init character
+        GameState.currentSide = CharacterMethods.getTurnOrder()[0].Side;
 
     }
 
     if ( GameState.state.modelsAdded ) {
 
-        // Animate Players
+        // Animate Players / Enemies
         Players.update( Clock.getDelta() );
         Enemies.update( Clock.getDelta() );
 
         // Game Logic
 
-        // Is the current player no longer pending a turn?
-        if ( !GameState.players[ GameState.currentPlayer ].TurnPending ) {
+        // Have all characters been, i.e. is it end of turn
+        if ( CharacterMethods.haveAllCharactersBeen() ) {
 
-            // Set the next player
-            const nextPlayer = Players.getHighestInitiativePlayerPendingTurn().player;
-            
-            // DEBUG
-            console.log(`Setting next player as [${nextPlayer}] in code.js`);
+            console.log( 'TURNOVER' )
+            GameState.turn++;
+            CharacterMethods.setAllCharactersToPending();
+            // Set the next character
+            const nextCharacter = CharacterMethods.getHighestInitiativeCharacterPendingTurn();
+            GameState.currentCharacter = nextCharacter.character;
+            GameState.currentSide = nextCharacter.side;
 
-            GameState.currentPlayer = nextPlayer;
+        }
 
-            // Update the html here?
+        // Is the current character no longer pending a turn?
+        if ( !GameState[ GameState.currentSide ][ GameState.currentCharacter ].TurnPending ) {
 
+            // Set the next character
+            const nextCharacter = CharacterMethods.getHighestInitiativeCharacterPendingTurn();
+            GameState.currentCharacter = nextCharacter.character;
+            GameState.currentSide = nextCharacter.side;
 
         }
         // Determine highest initiative character pending a turn

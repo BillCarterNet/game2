@@ -39,7 +39,7 @@ const updateDebugValues = () => {
 
     Html.writeElementValue( 'hexagon_row_0_col_0', Picker.getIntersectedObject() );
 
-    Html.writeElementValue( 'element_row_0_col_0', Picker.getElement().id );
+    Html.writeElementValue( 'element_row_0_col_0', Picker.getElement() ? Picker.getElement().id : 'None' );
 
 }
 
