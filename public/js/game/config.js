@@ -28,7 +28,7 @@ const gameConfig = {
 
     },
 
-    opacity: 0.5, // Hook up later in HTML and Grid
+    opacity: 0.33, // Hook up later in HTML and Grid
 
     players: {
 
@@ -55,8 +55,8 @@ const gameConfig = {
                 CriticalSize: 50,
                 PhysicalOffense: 80,
                 PhysicalDefense: 80,
-                MagicOffense: 0,
-                MagicDefense: 0,
+                MagicalOffense: 0,
+                MagicalDefense: 0,
 
             },
 
@@ -92,8 +92,8 @@ const gameConfig = {
                 CriticalSize: 50,
                 PhysicalOffense: 80,
                 PhysicalDefense: 80,
-                MagicOffense: 0,
-                MagicDefense: 0,
+                MagicalOffense: 0,
+                MagicalDefense: 0,
 
             },
 
@@ -129,8 +129,8 @@ const gameConfig = {
                 CriticalSize: 50,
                 PhysicalOffense: 80,
                 PhysicalDefense: 80,
-                MagicOffense: 0,
-                MagicDefense: 0,
+                MagicalOffense: 0,
+                MagicalDefense: 0,
 
             },
 
@@ -166,8 +166,8 @@ const gameConfig = {
                 CriticalSize: 50,
                 PhysicalOffense: 80,
                 PhysicalDefense: 80,
-                MagicOffense: 0,
-                MagicDefense: 0,
+                MagicalOffense: 0,
+                MagicalDefense: 0,
 
             },
 
@@ -199,8 +199,8 @@ const gameConfig = {
                 CriticalSize: 50,
                 PhysicalOffense: 80,
                 PhysicalDefense: 80,
-                MagicOffense: 80,
-                MagicDefense: 80,
+                MagicalOffense: 80,
+                MagicalDefense: 80,
 
             },
 
@@ -242,13 +242,13 @@ const gameConfig = {
         },
         'BallisticSkill': {
 
-            displayName: 'WS',
+            displayName: 'BS',
             tooltip: 'Determines impact and success of ranged weapon attack',
 
         },
         'MagicSkill': {
 
-            displayName: 'WS',
+            displayName: 'MS',
             tooltip: 'Determines impact and success of spell casting',
 
         },

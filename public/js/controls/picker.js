@@ -42,7 +42,15 @@ window.addEventListener( 'mousemove', getMouseInfo, false );
 
 const setTarget = () => {
 
-    GameState.currentTargetGridId = GameState.currentPickedGridId;
+    if ( GameState.currentPickedGridId !== 'No visible hexagon') {
+
+        GameState.currentTargetGridId = GameState.currentPickedGridId;
+
+    } else {
+
+        console.log('Unable to set target');
+
+    }
 
 }
 

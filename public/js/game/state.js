@@ -20,6 +20,8 @@ let GameState = {
     enemySelected: false,
     currentPlayer: 'Mage',
     currentEnemy: '',
+    currentCharacter: '',
+    currentSide: '',
     currentPickedGridId: '',
     currentTarget: '',
     currentTargetGridId: 'hexagon_r8_h8',

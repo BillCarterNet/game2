@@ -62,6 +62,8 @@ const css = () => {
     Css.addRule( '#turnOrderTable, th, td', 'border-collapse: collapse' );
     Css.addRule( '#turnOrderTable, th, td', 'padding: 2px 4px 2px 4px' );
 
+    Css.addRule( '#turnOrderContainer h1', 'font-size: 18px;' );
+
 }
 
 // Module
@@ -89,10 +91,10 @@ const turnOrder = {
             let background;
             switch ( characters[row].Side ) {
 
-                case 'player':
+                case 'players':
                     background = playerBackground;
                 break;
-                case 'enemy':
+                case 'enemies':
                     background = enemyBackground;
                 break;
 
@@ -114,8 +116,8 @@ const turnOrder = {
                     break;
                     case 3:
                         if ( characters[row].TurnPending ) { td.innerText = 'Pending'; } 
-                        else { td.innerText = 'Been'; }
-                        if ( GameState.currentPlayer === characters[row].Model ) { 
+                        else { td.innerText = 'Taken'; }
+                        if ( GameState.currentCharacter === characters[row].Model ) { 
                             
                             td.innerText = 'Active';
                             td.style.background = activeBackground; 

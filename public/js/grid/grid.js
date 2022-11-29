@@ -607,7 +607,7 @@ const constructHexagonHighlightMeshes = () => {
             // Black for all grids
             color: GameConfig.colours.active,
             transparent: true,
-            opacity: 0.5,
+            opacity: GameConfig.opacity,
 
         });
         // Will need to update this on the fly (i.e. change colour)
@@ -1327,35 +1327,40 @@ const grid = {
         }
 
         // Current Character / Target
+        if ( GameState.state.modelsAdded ) {
 
-        // Get Current Player (if none must be an enemy)
-        const currentPlayer = GameState.currentPlayer;
-        // Get Row / Hex
-        const currentPlayerRow = GameState.players[ currentPlayer ].Row;
-        const currentPlayerHex = GameState.players[ currentPlayer ].Hex;
-        const currentPlayerGridId = `hexagon_r${ currentPlayerRow }_h${ currentPlayerHex }`;
-        const currentTargetGridId = GameState.currentTargetGridId;
-        // Make visible (all other invis)
-        hexagons.forEach( hexagon => {
+            // Get Current Player (if none must be an enemy)
+            const currentCharacter = GameState.currentCharacter;
+            const currentSide = GameState.currentSide;
+            // Get Row / Hex
+            const currentPlayerRow = GameState[ currentSide ][ currentCharacter ].Row;
+            const currentPlayerHex = GameState[ currentSide ][ currentCharacter ].Hex;
+            const currentPlayerGridId = `hexagon_r${ currentPlayerRow }_h${ currentPlayerHex }`;
+            const currentTargetGridId = GameState.currentTargetGridId;
+            // Make visible (all other invis)
+            hexagons.forEach( hexagon => {
 
-            switch ( hexagon.id ) {
+                switch ( hexagon.id ) {
 
-                case currentPlayerGridId:
-                    hexagon.highlightMesh.visible = true;
-                break;
+                    case currentPlayerGridId:
+                        hexagon.highlightMesh.visible = true;
+                    break;
 
-                case currentTargetGridId:
-                    hexagon.highlightMesh.visible = true;
-                    hexagon.highlightMaterial.color.set( GameConfig.colours.target );
-                break;
+                    case currentTargetGridId:
+                        hexagon.highlightMesh.visible = true;
+                        hexagon.highlightMaterial.color.set( GameConfig.colours.target );
+                        //hexagon.highlightMaterial.opacity.set( GameConfig.colours.opacity );
+                    break;
 
-                default:
-                    hexagon.highlightMesh.visible = false;
-                break;
+                    default:
+                        hexagon.highlightMesh.visible = false;
+                    break;
 
-            }
+                }
 
-        });
+            });
+
+        }
 
         if ( GameState.state.modelsAdded ) {
 
