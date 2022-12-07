@@ -16,10 +16,16 @@ const enemyBackground = Helper.hexToRGBA(
     GameConfig.opacity, 
 );
 
-const playerStatsHeadings = [ 'STATS' ]
+const playerStatsHeadings = [ 'STATS' ];
+const playerStatsInfo = [];
 Object.keys( GameConfig.stats ).forEach( stat => {
 
     playerStatsHeadings.push( GameConfig.stats[stat].displayName );
+    playerStatsInfo.push( {
+        fullName: GameConfig.stats[stat].fullName,
+        displayName: GameConfig.stats[stat].displayName,
+        attrition: GameConfig.stats[stat].attrition,
+    } );
 
 });
 
@@ -44,7 +50,13 @@ const html = () => {
     playerStatsContainer.appendChild( playerStatHeadingContainer );
 
     // Table
-    const playerStatsTable = Html.createTable( null, 'playerStatsTable', 6, playerStatsHeadings.length, playerStatsHeadings );
+    const playerStatsTable = Html.createTable( 
+        null, 
+        'playerStatsTable', 
+        GameConfig.statModifiers.length, 
+        playerStatsHeadings.length, 
+        playerStatsHeadings 
+    );
     playerStatsContainer.appendChild( playerStatsTable );
     draggableArea.appendChild( playerStatsContainer );
 
@@ -77,7 +89,18 @@ const css = () => {
 
 // Dont call until player models are loaded and players initialised
 const updatePlayerStatsTable = () => {
-    
+
+    // Heading 
+    const playerStatsHeading = document.getElementById( 'playerStatsHeading' );
+    playerStatsHeading.innerText = `${ GameState[ GameState.currentSide ][ GameState.currentCharacter ].Name } Stats`;
+    const playerStatHeadingContainer = document.getElementById( 'playerStatHeadingContainer' );
+    if ( GameState.currentSide === 'players' ) { playerStatHeadingContainer.style[ 'background-color' ] = playerBackground; }
+    if ( GameState.currentSide === 'enemies' ) { playerStatHeadingContainer.style[ 'background-color' ] = enemyBackground; }
+
+    // This will be used to populate the table
+    // Each row will have an array
+    // The first element will be The row name as it is displayed in the table
+    // The subsequent elements will be the row values (html in a string) for each stat
     const playerStatsData = {
 
         BaseStats: [ 'Base' ],
@@ -89,28 +112,46 @@ const updatePlayerStatsTable = () => {
 
     };
 
-    // Heading 
-    const playerStatsHeading = document.getElementById( 'playerStatsHeading' );
-    playerStatsHeading.innerText = `${ GameState[ GameState.currentSide ][ GameState.currentCharacter ].Name } Stats`;
-    const playerStatHeadingContainer = document.getElementById( 'playerStatHeadingContainer' );
-    if ( GameState.currentSide === 'players' ) { playerStatHeadingContainer.style[ 'background-color' ] = playerBackground; }
-    if ( GameState.currentSide === 'enemies' ) { playerStatHeadingContainer.style[ 'background-color' ] = enemyBackground; }
+    // Get the Stats values into playerStatsData
+    Object.keys( playerStatsData ).forEach( row => {
 
-    // Stats
-    Object.keys( playerStatsData ).forEach( statType => {
+        //console.log( `row [${row}]`)
+        playerStatsInfo.forEach ( stat => {
 
-        Object.keys( GameConfig.stats ).forEach( stat => {
+            //console.log( `stat [${stat.fullName}]`)
+            const statValue = GameState[ GameState.currentSide ][ GameState.currentCharacter ][ row ][ stat.fullName ];
 
-            if ( GameState[ GameState.currentSide ][ GameState.currentCharacter ][ statType ][ stat ] !== undefined ) {
+            // Prepare entry
 
-                playerStatsData[ statType ].push( GameState[ GameState.currentSide ][ GameState.currentCharacter ][ statType ][ stat ] );
+            // Is it zero?
+            if ( statValue === 0 ) { // Zero
 
-            } else {
+                // Is it BaseStats row or CurrentStats row (display it)
+                if ( row === 'BaseStats' || row === 'CurrentStats' ) {
 
-                console.log( `ERROR: No stat value for GameState[${ GameState.currentSide }][${ GameState.currentCharacter }][${ statType }][${stat}]`);
-                console.log( GameState[ GameState.currentSide ][ GameState.currentCharacter ][ statType ][ stat ] );
-                console.log( GameState )
-                throw new Error( 'Fatal Error' );
+                    // Add entry to playerStatsData
+                    playerStatsData[ row ].push( statValue.toString() );
+
+                } else {
+
+                    // Display as blank
+                    playerStatsData[ row ].push( ' ' );
+
+                }
+
+            } else { // None Zero
+ 
+                // Is it CurrentStats and Attrition stat
+                if ( row === 'CurrentStats' && stat.attrition ) {
+
+                    const fraction = `${statValue.current} / ${statValue.max}`;
+                    playerStatsData[ row ].push( fraction );
+
+                } else {
+
+                    playerStatsData[ row ].push( statValue.toString() );
+
+                }
 
             }
 
@@ -118,36 +159,15 @@ const updatePlayerStatsTable = () => {
 
     });
 
-    // Set values in the table
+    // Set values in the html table
     let rowIndex = 0;
     Object.keys( playerStatsData ).forEach( row => {
         
         for ( let i = 0; i < playerStatsHeadings.length; i++ ) {
 
             const td = document.getElementById( `playerStatsTable_row_${rowIndex}_col_${i}` );
-            if (
-                ( playerStatsData[ row ][ i ] === 0) && 
-                ( row !== 'BaseStats' )
-            ) {
+            td.innerHTML = playerStatsData[ row ][ i ];
 
-                // Dont display zero's unless its the 'current' row
-                if ( row !== 'CurrentStats' ) {
-
-                    td.innerText = '';
-                    
-                } else {
-
-                    td.innerText = playerStatsData[ row ][ i ];
-
-                }
-
-            } else {
-
-                // Display non zero value
-                td.innerText = playerStatsData[ row ][ i ];
-
-            }
-    
         }
         rowIndex++;
 

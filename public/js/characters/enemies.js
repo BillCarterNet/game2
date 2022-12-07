@@ -203,7 +203,8 @@ const enemies = {
             Methods.initEnemyBuffStats( 'Skeleton', object.model.name );
             Methods.initEnemyDebuffStats( 'Skeleton', object.model.name );
             Methods.initEnemyEnvironmentStats( 'Skeleton', object.model.name );
-            setCurrentStatistics( object.model.name );
+            //setCurrentStatistics( object.model.name );
+            Methods.setCurrentStatistics( object.model.name, 'enemies' );
 
             // Get co-ordinates based on grid position
             gridCoOrdinates = Grid.getHexCentre( 

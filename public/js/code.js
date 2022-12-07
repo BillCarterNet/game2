@@ -1,10 +1,9 @@
 // Three
 import * as THREE from '/build/three.module.js';
-// import { GLTFLoader } from '../../jsm/loaders/GLTFLoader.js';
+// Three stats
 import Stats from '../../jsm/libs/stats.module.js';
-// import * as DAT from '/dat/dat.gui.module.js';
-
-
+// Memory tracking stats
+const memStats = new MemoryStats();
 
 // Modules
 import HtmlAndCSS from './htmlAndCss/htmlAndCss.js';
@@ -26,6 +25,7 @@ import TextureLoader from './assets/textureLoader.js';
 import ModelLoader from './assets/modelLoader.js';
 import AnimationLoader from './assets/animationLoader.js';
 import Picker from './controls/picker.js';
+
 
 
 
@@ -61,7 +61,7 @@ scene.background = new THREE.Color( 0x111111 );
 // Renderer
 const renderer = new THREE.WebGLRenderer({ antialias:true });
 renderer.setSize( canvasContainer.offsetWidth, canvasContainer.offsetHeight );
-renderer.setPixelRatio( (window.devicePixelRatio) ? window.devicePixelRatio : 1 );
+renderer.setPixelRatio( ( window.devicePixelRatio ) ? window.devicePixelRatio : 1 );
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 canvasContainer.appendChild( renderer.domElement );
@@ -71,9 +71,12 @@ const stats = new Stats( { autoPlace: false } );
 stats.domElement.style.position = 'relative';
 const statsContainer = document.getElementById( 'statsContainer' );
 statsContainer.appendChild( stats.domElement );
+statsContainer.appendChild( memStats.domElement );
 statsContainer.hidden = true;
 const debugContainer = document.getElementById( 'debugContainer');
 debugContainer.hidden = true;
+const debugContainer2 = document.getElementById( 'debugContainer2');
+debugContainer2.hidden = true;
 const datContainer = document.getElementById( 'datContainer' );
 datContainer.hidden = true;
 const threeDebugContainer = document.getElementById( 'threeDebugContainer' );
@@ -116,14 +119,17 @@ const renderFrame = () => {
     PointLights.updateLights();
     // THREE DEBUG
     stats.update();
+    // Memory Debug
+    memStats.update();
 
     if ( GameState.debug ) { 
         
         statsContainer.hidden = false;
         debugContainer.hidden = false;
+        debugContainer2.hidden = false;
         datContainer.hidden = false;
         threeDebugContainer.hidden = false;
-        HtmlAndCSS.updateDebug();
+        HtmlAndCSS.updateDebug( renderer );
     
     } else { 
         
@@ -223,7 +229,7 @@ const renderFrame = () => {
             // - All player death
             // - All enemy death
 
-        HtmlAndCSS.updatePlayerAndTarget();
+        //HtmlAndCSS.updatePlayerAndTarget();
 
     }
 

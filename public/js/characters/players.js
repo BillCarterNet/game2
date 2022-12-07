@@ -181,7 +181,8 @@ const players = {
             Methods.initPlayerBuffStats( object.model.name );
             Methods.initPlayerDebuffStats( object.model.name );
             Methods.initPlayerEnvironmentStats( object.model.name );
-            setCurrentStatistics( object.model.name );
+            //setCurrentStatistics( object.model.name );
+            Methods.setCurrentStatistics( object.model.name, 'players' );
 
             // Shadows
             // Need to fix point shadows square (currently off in light source)

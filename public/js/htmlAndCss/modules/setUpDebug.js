@@ -4,7 +4,22 @@ import GameCamera from '../../game/camera.js';
 import GameState from '../../game/state.js';
 import Picker from '../../controls/picker.js';
 
-const updateDebugValues = () => {
+//import process from '/modules/process';
+//import process from 'node:process';
+//import process from '../../../../node_modules/process';
+//import process from './process';
+//const process = require('process');
+
+const countNodes = ( element = document.body ) => {
+    let count = 0; let child = element.firstElementChild;    
+    while ( child ) { count += countNodes(child);
+        if ( child.shadowRoot ) { count += countNodes( child.shadowRoot ); }
+        child = child.nextElementSibling; count++;
+    } 
+    return count;
+}
+
+const updateDebugValues = ( renderer ) => {
 
     Html.writeElementValue( 'camera_row_0_col_0', 'Position' );
     Html.writeElementValue( 'camera_row_0_col_1', GameCamera.getPosVector().x.toFixed( 2 ).toString() );
@@ -41,11 +56,23 @@ const updateDebugValues = () => {
 
     Html.writeElementValue( 'element_row_0_col_0', Picker.getElement() ? Picker.getElement().id : 'None' );
 
+    //Html.writeElementValue( 'dom_row_0_col_0', document.getElementsByTagName('*').length );
+    Html.writeElementValue( 'dom_row_0_col_0', countNodes() );
+
+    Html.writeElementValue( 'memory_row_0_col_0', renderer.info.memory.geometries );
+    Html.writeElementValue( 'memory_row_0_col_1', renderer.info.memory.textures );
+
+    Html.writeElementValue( 'render_row_0_col_0', renderer.info.render.calls );
+    Html.writeElementValue( 'render_row_0_col_1', renderer.info.render.triangles );
+    Html.writeElementValue( 'render_row_0_col_2', renderer.info.render.points );
+    Html.writeElementValue( 'render_row_0_col_3', renderer.info.render.lines );
+    Html.writeElementValue( 'render_row_0_col_4', renderer.info.render.frame );
+
 }
 
 const html = () => {
 
-    // HTML
+    // Container 1
 
     const debugContainer = document.createElement( 'div' );
     debugContainer.setAttribute( 'id', 'debugContainer' );
@@ -76,6 +103,28 @@ const html = () => {
     const elTable = Html.createTable( 'MOUSEOVER', 'element', 1, elHeading.length, elHeading );
     debugContainer.appendChild( elTable );
 
+    // Container 2
+
+    const debugContainer2 = document.createElement( 'div' );
+    debugContainer2.setAttribute( 'id', 'debugContainer2' );
+    document.body.appendChild( debugContainer2 );
+
+    const title2 = document.createElement( 'h1' );
+    title2.innerText = 'MORE DEBUG';
+    debugContainer2.appendChild( title2 );
+
+    const domHeading = [ 'Element Count' ]
+    const domTable = Html.createTable( 'DOM', 'dom', 1, domHeading.length, domHeading );
+    debugContainer2.appendChild( domTable );
+
+    const memoryHeadings = [ 'Geometries', 'Textures', ];
+    const memoryTable = Html.createTable( 'MEMORY', 'memory', 1, memoryHeadings.length, memoryHeadings );
+    debugContainer2.appendChild( memoryTable );
+
+    const renderHeadings = [ 'Calls', 'Triangles', 'Points', 'Lines', 'Frame' ];
+    const renderTable = Html.createTable( 'RENDER', 'render', 1, renderHeadings.length, renderHeadings );
+    debugContainer2.appendChild( renderTable );
+
 }
 
 const css = () => {
@@ -87,6 +136,12 @@ const css = () => {
     Css.addRule( '#debugContainer', 'right: 1%;' );
     Css.addRule( '#debugContainer', 'font-size: 10px;' );
     Css.addRule( '#debugContainer', 'padding: 5px;' );
+
+    Css.addRule( '#debugContainer2', 'position: absolute;' );
+    Css.addRule( '#debugContainer2', 'bottom: 1%;' );
+    Css.addRule( '#debugContainer2', 'right: 20%;' );
+    Css.addRule( '#debugContainer2', 'font-size: 10px;' );
+    Css.addRule( '#debugContainer2', 'padding: 5px;' );
 
     Css.addRule( '.table', 'align: center' );
     Css.addRule( '.table', 'width: 100%;' );
@@ -100,6 +155,11 @@ const css = () => {
     Css.addRule( '#debugContainer', 'text-align: center;' );
     Css.addRule( '#debugContainer', 'background: rgba(0, 0, 0, 0.75);' );
 
+    Css.addRule( '#debugContainer2', 'border: 2px solid #d3d3d3;' );
+    Css.addRule( '#debugContainer2', 'color: white;' );
+    Css.addRule( '#debugContainer2', 'text-align: center;' );
+    Css.addRule( '#debugContainer2', 'background: rgba(0, 0, 0, 0.75);' );
+
 }
 
 const setUpDebug = {
@@ -111,9 +171,9 @@ const setUpDebug = {
 
     },
 
-    update: () => {
+    update: ( renderer ) => {
 
-        updateDebugValues();
+        updateDebugValues( renderer );
 
     }
 

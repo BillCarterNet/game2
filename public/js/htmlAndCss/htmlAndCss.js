@@ -41,17 +41,17 @@ const HtmlAndCSS = {
 
     },
 
-    displayLoading: (x) => {
+    displayLoading: ( x ) => {
 
         if ( x <= 0 ) { x = 0 };
         if ( x >= 100 ) { x = 100 };
-        Css.editElementCSS( 'loadingBar', 'width', `${x}%` );
+        Css.editElementCSS( 'loadingBar', 'width', `${ x }%` );
 
     },
 
-    updateDebug: () => {
+    updateDebug: ( renderer ) => {
 
-        SetUpDebug.update();
+        SetUpDebug.update( renderer );
 
     },
 

@@ -7,7 +7,7 @@ import Helper from '../../assets/helper.js';
 
 // CSS constants
 const playerAndTargetContainerWidthInPx = 230;
-const playerAndTargetContainerHeightInPx = 575;
+const playerAndTargetContainerHeightInPx = 635;
 const statLabelWidthInPx = 40; 
 const statValueWidthInPx = 175;
 const playerBackground = Helper.hexToRGBA( 
@@ -20,44 +20,81 @@ const enemyBackground = Helper.hexToRGBA(
 );
 
 /**
- * 
+ * Inserts a stat value bar into a container
  * @param {int} value Number of values (coloured)
  * @param {int} maxValue Number of possible values (blank)
  * @param {string} id 
  */
 const insertValue = ( value, maxValue, id ) => {
 
-    const valueContainer = document.getElementById( id );
-    valueContainer.innerHTML = null;
-    const ul = document.createElement( 'ul' );
-    ul.setAttribute( 'class', 'valueUl' );
-    valueContainer.appendChild( ul );
+    switch ( id ) {
 
-    const blockWidth = statValueWidthInPx / maxValue;
-
-    for( let i = 0; i < maxValue; i++ ) {
-
-        const block = document.createElement( 'li' );
-        block.setAttribute( 'class', 'block' );
-        ul.appendChild( block );
-        // Add some CSS too
-        block.style.left = (i * blockWidth + statLabelWidthInPx + 5) + 'px';
-        block.style.width = `${blockWidth}px`;
-        if ( i < value ) {
-
-            block.style.background = 'blue';
-
-        } 
+        case 'actionPointValue_player':
+        case 'actionPointValue_target':
+        case 'buffsValue_player':
+        case 'buffsValue_target':
+        case 'debuffsValue_player':
+        case 'debuffsValue_target':
+            const valueContainer = document.getElementById( id );
+            valueContainer.innerHTML = null;
+            const ul = document.createElement( 'ul' );
+            ul.setAttribute( 'class', 'valueUl' );
+            valueContainer.appendChild( ul );
+        
+            const blockWidth = statValueWidthInPx / maxValue;
+        
+            for ( let i = 0; i < maxValue; i++ ) {
+        
+                const block = document.createElement( 'li' );
+                block.setAttribute( 'class', 'block' );
+                ul.appendChild( block );
+                // Add some CSS too
+                block.style.left = ( i * blockWidth + statLabelWidthInPx + 6.5 ) + 'px';
+                block.style.width = `${ blockWidth }px`;
+                if ( i < value ) {
+        
+                    block.style.background = 'blue';
+        
+                } 
+        
+            }
+        break;
+        case 'healthValue_player':
+        case 'healthValue_target':
+            const healthValueContainer = document.getElementById( id );
+            healthValueContainer.innerHTML = null;
+            const healthBar = document.createElement( 'div' );
+            const entity = id.includes( 'player' ) ? 'player' : 'target';
+            healthBar.setAttribute( 'id', `healthBar_${ entity }` );
+            healthValueContainer.appendChild( healthBar );
+            Css.addRule( `#healthBar_${ entity }`, 'background-color: green' );
+            Css.addRule( `#healthBar_${ entity }`, 'height: 100%;' );
+            const hbWidthPercentage = value / maxValue * 100;
+            Css.addRule( `#healthBar_${ entity }`, `width: ${hbWidthPercentage}%;` );
+            const healthNumValue = document.createElement( 'div' );
+            healthNumValue.setAttribute( 'id', `healthNumValue${ entity }` );
+            healthNumValue.innerText = `${value} / ${maxValue} (${hbWidthPercentage.toFixed(0)}%)`;
+            healthValueContainer.appendChild( healthNumValue );
+            Css.addRule( `#healthNumValue${ entity }`, `position: relative;` );
+            Css.addRule( `#healthNumValue${ entity }`, `transform: translate(0px, -20px);` );
+            Css.addRule( `#healthNumValue${ entity }`, `font-size: 12px;` );
+        break;
 
     }
 
 }
 
+/**
+ * Creates a container for the stat
+ * @param {string} stat e.g. actionPoint, health, mana, buffs, debuffs
+ * @param {string} type e.g. player or target
+ */
 const createStatHtml = ( stat, type ) => {
 
     const labels = {
         'actionPoint': 'AP',
         'health': 'Health',
+        'mana': 'Mana',
         'buffs': 'Buffs',
         'debuffs': 'Debuffs',
     }
@@ -110,7 +147,6 @@ const html = () => {
 
     const infoContainer = document.createElement( 'div' );
     infoContainer.setAttribute( 'id', 'infoContainer' );
-    // infoContainer.setAttribute( 'class', 'playerAndTargetContainer' );
     const turnContainer = document.createElement( 'div' );
     turnContainer.setAttribute( 'id', 'turnContainer' );
     const turnLabel = document.createElement( 'div' );
@@ -125,6 +161,7 @@ const html = () => {
     playerAndTargetContainer.appendChild( infoContainer );
 
     // Info buttons
+
     const infoButtonContainer = document.createElement( 'div' );
     infoButtonContainer.setAttribute( 'id', 'infoButtonContainer' );
     const infoTurnOrderButton = document.createElement( 'button' );
@@ -188,10 +225,12 @@ const html = () => {
 
     createStatHtml( 'actionPoint', 'player' );
     createStatHtml( 'health', 'player' );
+    createStatHtml( 'mana', 'player' );
     createStatHtml( 'buffs', 'player' );
     createStatHtml( 'debuffs', 'player' );
     createStatHtml( 'actionPoint', 'target' );
     createStatHtml( 'health', 'target' );
+    createStatHtml( 'mana', 'target' );
     createStatHtml( 'buffs', 'target' );
     createStatHtml( 'debuffs', 'target' );
 
@@ -273,7 +312,7 @@ const css = () => {
 
     Css.addRule( '.playerAndTargetContainer', 'border: 1px solid #d3d3d3;' );
     Css.addRule( '.playerAndTargetContainer', 'margin: 4px;' );
-    Css.addRule( '.playerAndTargetContainer', 'height: 195px;' );
+    Css.addRule( '.playerAndTargetContainer', 'height: 225px;' );
 
     // Player Stats
 
@@ -311,7 +350,6 @@ const css = () => {
 
     Css.addRule( '.block', 'position: absolute;' );
     Css.addRule( '.block', 'list-style: none;' );
-    //Css.addRule( '.block', 'width: 15px;' );
     Css.addRule( '.block', 'height: 26px;' );
     Css.addRule( '.block', 'border-left: 1px solid #d3d3d3;' );
     Css.addRule( '.block', 'border-right: 1px solid #d3d3d3;' );
@@ -374,14 +412,25 @@ const playerAndTarget = {
                 console.log( GameState );
                 throw new Error( 'Error' ); 
             }
+            // NAME
             playerName.innerText = 
                 `${ GameState[ GameState.currentSide ][ GameState.currentCharacter ].Name } ` + 
                 `[${ GameState[ GameState.currentSide ][ GameState.currentCharacter ].Class }] `;
+            // BACKGROUND
             const playerNameContainer = document.getElementById( 'playerNameContainer' );
             if ( GameState.currentSide === 'players' ) { playerNameContainer.style.background = playerBackground; }
             if ( GameState.currentSide === 'enemies' ) { playerNameContainer.style.background = enemyBackground; }
-            //insertValue( 1, GameState.players[ GameState.currentPlayer ].BaseStats.ActionPoints, 'actionPointValue' );
-            insertValue( 1, GameState[ GameState.currentSide ][ GameState.currentCharacter ].BaseStats.ActionPoints, `actionPointValue_player` );
+            // STATS
+            insertValue( 
+                GameState[ GameState.currentSide ][ GameState.currentCharacter ].CurrentStats.ActionPoints.current, // Need to replace with current value
+                GameState[ GameState.currentSide ][ GameState.currentCharacter ].CurrentStats.ActionPoints.max, // This is the max value
+                `actionPointValue_player` 
+            );
+            insertValue( 
+                GameState[ GameState.currentSide ][ GameState.currentCharacter ].CurrentStats.Health.current, // Need to replace with current value
+                GameState[ GameState.currentSide ][ GameState.currentCharacter ].CurrentStats.Health.max, // This is the max value
+                `healthValue_player` 
+            );
 
         } else {
 
@@ -404,7 +453,16 @@ const playerAndTarget = {
 
                 targetContainer.hidden = false;
                 const playerClass = Object.keys( GameState.players ).find( c => GameState.players[ c ].Name === targetGridContent.name);
-                insertValue( 1, GameState.players[ playerClass ].BaseStats.ActionPoints, `actionPointValue_target` );
+                insertValue( 
+                    GameState.players[ playerClass ].CurrentStats.ActionPoints.current,  
+                    GameState.players[ playerClass ].CurrentStats.ActionPoints.max, 
+                    `actionPointValue_target` 
+                );
+                insertValue( 
+                    GameState.players[ playerClass ].CurrentStats.Health.current,  
+                    GameState.players[ playerClass ].CurrentStats.Health.max, 
+                    `healthValue_target` 
+                );
                 targetName.innerText = `${targetGridContent.name} [${playerClass}]`;
                 targetNameContainer.style.background = playerBackground;
 
@@ -414,7 +472,16 @@ const playerAndTarget = {
 
                 targetContainer.hidden = false;
                 const enemyModel = Object.keys( GameState.enemies ).find( m => GameState.enemies[ m ].Name === targetGridContent.name);
-                insertValue( 1, GameState.enemies[ enemyModel ].BaseStats.ActionPoints, `actionPointValue_target` );
+                insertValue( 
+                    GameState.enemies[ enemyModel ].CurrentStats.ActionPoints.current,
+                    GameState.enemies[ enemyModel ].CurrentStats.ActionPoints.max, 
+                    `actionPointValue_target` 
+                );
+                insertValue( 
+                    GameState.enemies[ enemyModel ].CurrentStats.Health.current,
+                    GameState.enemies[ enemyModel ].CurrentStats.Health.max, 
+                    `healthValue_target` 
+                );
                 targetName.innerText = `${targetGridContent.name} [${GameState.enemies[ enemyModel ].Class}]`;
                 targetNameContainer.style.background = enemyBackground;
 

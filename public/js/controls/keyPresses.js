@@ -90,6 +90,20 @@ let keyPresses = {
 
             }
 
+            // Is it 'n' lower current character health
+            if ( e.which == 110 ) {
+
+                GameState[ GameState.currentSide ][ GameState.currentCharacter ].CurrentStats.Health.current++;
+
+            }
+
+            // Is it 'm' higher current character health
+            if ( e.which == 109 ) {
+
+                GameState[ GameState.currentSide ][ GameState.currentCharacter ].CurrentStats.Health.current--;
+
+            }
+
         };
         
         const log = ( event ) => {

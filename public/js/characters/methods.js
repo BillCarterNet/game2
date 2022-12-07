@@ -72,10 +72,10 @@ const methods = {
             GameState.players[ player ].BaseStats = {};
             Object.keys( GameConfig.players[ player ].BaseStats ).forEach( stat => {
 
-                GameState.players[ player ].BaseStats[ stat ] = 
-                    GameConfig.players[ player ].BaseStats[ stat ];
+            GameState.players[ player ].BaseStats[ stat ] = 
+                GameConfig.players[ player ].BaseStats[ stat ];
 
-            });
+        });
 
         } else {
 
@@ -384,6 +384,49 @@ const methods = {
         Object.keys( GameState.enemies ).forEach( enemy => { GameState.enemies[ enemy ].TurnPending = true; });
 
     },
+
+    setCurrentStatistics: ( characterName, characterSide ) => {
+
+        GameState[ characterSide ][ characterName ].CurrentStats = {};
+    
+        Object.keys( GameConfig.stats ).forEach( statName => {
+    
+            // What is the stat total?
+            let statTotal = 0;
+            GameConfig.statModifiers.forEach( statModifier => {
+
+                if ( statModifier !== 'CurrentStats' ) { 
+                    
+                    statTotal += GameState[ characterSide ][ characterName ][ statModifier ][ statName ];
+                
+                }
+
+            });
+                // GameState[ characterSide ][ characterName ].BaseStats[ statName ] +
+                // GameState[ characterSide ][ characterName ].ItemStats[ statName ] +
+                // GameState[ characterSide ][ characterName ].BuffStats[ statName ] +
+                // GameState[ characterSide ][ characterName ].DebuffStats[ statName ] +
+                // GameState[ characterSide ][ characterName ].EnvironmentStats[ statName ];
+
+            // Is it an attrition stat?
+            if ( GameConfig.stats[ statName ].attrition ) {
+
+                GameState[ characterSide ][ characterName ].CurrentStats[ statName ] = {
+
+                    max: statTotal,
+                    current: statTotal,
+
+                };
+
+            } else {
+
+                GameState[ characterSide ][ characterName ].CurrentStats[ statName ] = statTotal;
+
+            }
+    
+        });
+    
+    }
 
 };
 

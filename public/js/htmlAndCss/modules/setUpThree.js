@@ -53,7 +53,7 @@ const css = () => {
     Css.addRule( '#statsContainer', 'left: 1%;' );
     Css.addRule( '#statsContainer', 'bottom: 1.5%;' );
     Css.addRule( '#statsContainer', 'width: 80px;' ); // Seems to be default size
-    Css.addRule( '#statsContainer', 'height: 51px;' ); // Seems to be default size
+    Css.addRule( '#statsContainer', 'height: 100px;' ); // Seems to be default size
 
     Css.addRule( '#threeDebugContainer', 'border: 2px solid #d3d3d3;' );
     Css.addRule( '#threeDebugContainer', 'color: white;' );

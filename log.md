@@ -3,6 +3,10 @@ Restarting after git error
 # Good reference
 Getting node running three
 https://www.youtube.com/watch?v=J1TH9iCrVKk
+https://www.youtube.com/watch?v=z9qtGHTqLqQ
+https://stackoverflow.com/questions/10703212/recommended-way-to-make-a-2d-hud-in-webgl
+https://www.reddit.com/r/threejs/comments/4yxf12/so_how_does_one_implement_ingame_hud/
+
 
 # Initial aims
 - get three.js installed via npm (/)

@@ -121,7 +121,7 @@ const gameConfig = {
                 Initiative: 35,
                 ActionPoints: 3,
                 Health: 500,
-                Mana: 0,
+                Mana: 25,
                 WeaponSkill: 60,
                 BallisticSkill: 80,
                 MagicSkill: 0,
@@ -158,7 +158,7 @@ const gameConfig = {
                 Initiative: 40,
                 ActionPoints: 5,
                 Health: 500,
-                Mana: 0,
+                Mana: 50,
                 WeaponSkill: 60,
                 BallisticSkill: 80,
                 MagicSkill: 0,
@@ -212,84 +212,121 @@ const gameConfig = {
 
         'Initiative': {
 
+            fullName: 'Initiative',
             displayName: 'Init',
             tooltip: 'Determines turn order',
+            attrition: false,
 
         },
         'ActionPoints': {
 
+            fullName: 'ActionPoints',
             displayName: 'AP',
             tooltip: 'Determines actions that can be performed',
+            attrition: true,
 
         },
         'Health': {
 
+            fullName: 'Health',
             displayName: 'Health',
             tooltip: 'Reach zero and die',
+            attrition: true,
 
         },
         'Mana': {
 
+            fullName: 'Mana',
             displayName: 'Mana',
             tooltip: 'Reach zero and lose ability to cast',
+            attrition: true,
 
         },
         'WeaponSkill': {
 
+            fullName: 'WeaponSkill',
             displayName: 'WS',
             tooltip: 'Determines impact and success of melee weapon attack',
+            attrition: false,
 
         },
         'BallisticSkill': {
 
+            fullName: 'BallisticSkill',
             displayName: 'BS',
             tooltip: 'Determines impact and success of ranged weapon attack',
+            attrition: false,
 
         },
         'MagicSkill': {
 
+            fullName: 'MagicSkill',
             displayName: 'MS',
             tooltip: 'Determines impact and success of spell casting',
+            attrition: false,
 
         },
         'CriticalChance': {
 
+            fullName: 'CriticalChance',
             displayName: 'Crit %',
             tooltip: 'Percentage change of criticality',
+            attrition: false,
 
         },
         'CriticalSize': {
 
+            fullName: 'CriticalSize',
             displayName: 'Crit Size',
             tooltip: 'Determines the effect of criticality',
+            attrition: false,
 
         },
         'PhysicalOffense': {
 
+            fullName: 'PhysicalOffense',
             displayName: 'Phy Off',
             tooltip: 'Determines physical damage applied in physical attack',
+            attrition: false,
 
         },
         'PhysicalDefense': {
 
+            fullName: 'PhysicalDefense',
             displayName: 'Phy Def',
             tooltip: 'Determines physical damage mitigated in physical attack',
+            attrition: false,
 
         },
         'MagicalOffense': {
 
+            fullName: 'MagicalOffense',
             displayName: 'Mag Off',
             tooltip: 'Determines magical damage applied in magical attack',
+            attrition: false,
 
         },
         'MagicalDefense': {
 
+            fullName: 'MagicalDefense',
             displayName: 'Mag Def',
             tooltip: 'Determines magical damage mitigated in magical attack',
+            attrition: false,
 
         },
 
-    }
+    },
+
+    statModifiers: [
+
+        'BaseStats',
+        'ItemStats',
+        'BuffStats',
+        'DebuffStats',
+        'EnvironmentStats',
+        'CurrentStats',
+
+    ],
 
 };
 
