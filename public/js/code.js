@@ -229,7 +229,7 @@ const renderFrame = () => {
             // - All player death
             // - All enemy death
 
-        //HtmlAndCSS.updatePlayerAndTarget();
+        HtmlAndCSS.updatePlayerAndTarget();
 
     }
 
